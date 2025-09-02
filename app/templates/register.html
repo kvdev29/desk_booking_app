@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5" style="max-width: 500px;">
+    <h2 class="mb-4 text-center">Register</h2>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+
+        <div class="mb-3">
+            {{ form.username.label(class="form-label") }}
+            {{ form.username(class="form-control") }}
+        </div>
+
+        <div class="mb-3">
+            {{ form.email.label(class="form-label") }}
+            {{ form.email(class="form-control") }}
+        </div>
+
+        <div class="mb-3">
+            {{ form.password.label(class="form-label") }}
+            {{ form.password(class="form-control", id="password") }}
+            <div class="form-text" id="passwordHelp">Must be 8+ characters, include a number and special character.</div>
+            <div id="strengthFeedback" class="small mt-1"></div>
+        </div>
+
+        <div class="mb-3">
+            {{ form.confirm.label(class="form-label") }}
+            {{ form.confirm(class="form-control", id="confirmPassword") }}
+            <div id="matchFeedback" class="small mt-1"></div>
+        </div>
+
+        <div class="d-grid">
+            {{ form.submit(class="btn btn-success") }}
+        </div>
+    </form>
+</div>
+
+<script>
+    const passwordInput = document.getElementById('password');
+    const confirmInput = document.getElementById('confirmPassword');
+    const strengthFeedback = document.getElementById('strengthFeedback');
+    const matchFeedback = document.getElementById('matchFeedback');
+
+    passwordInput.addEventListener('input', function () {
+        const val = passwordInput.value;
+        let message = '';
+        let strength = 0;
+
+        if (val.length >= 8) strength++;
+        if (/[0-9]/.test(val)) strength++;
+        if (/[^A-Za-z0-9]/.test(val)) strength++;
+
+        switch (strength) {
+            case 0:
+            case 1:
+                message = '<span class="text-danger">Weak password</span>';
+                break;
+            case 2:
+                message = '<span class="text-warning">Moderate password</span>';
+                break;
+            case 3:
+                message = '<span class="text-success">Strong password</span>';
+                break;
+        }
+
+        strengthFeedback.innerHTML = message;
+    });
+
+    confirmInput.addEventListener('input', function () {
+        const match = confirmInput.value === passwordInput.value;
+        matchFeedback.innerHTML = match
+            ? '<span class="text-success">Passwords match</span>'
+            : '<span class="text-danger">Passwords do not match</span>';
+    });
+</script>
+{% endblock %}

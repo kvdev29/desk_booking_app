@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="text-center mt-5">
+    <h2 class="mb-4">Desk Booking System</h2>
+    <img src="{{ url_for('static', filename='LGoffice.png') }}" alt="Desk Booking Banner" class="img-fluid rounded shadow-sm mb-4" style="max-width: 600px;">
+
+    <div class="d-flex flex-column align-items-center">
+        <a href="{{ url_for('auth.login') }}" class="btn btn-primary mb-3 px-4 py-2">Login</a>
+        <a href="{{ url_for('auth.register') }}" class="btn btn-success px-4 py-2">Register</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>{{ 'All Bookings' if current_user.role == 'admin' else 'My Desk Bookings' }}</h2>
+        <a href="{{ url_for('main.create_booking') }}" class="btn btn-primary">+ New Booking</a>
+    </div>
+
+    <table class="table table-bordered table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>User</th>
+                <th>Date</th>
+                <th>Location</th>
+                <th>Floor</th>
+                <th>Desk</th>
+                <th>Notes</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for booking in bookings %}
+            <tr>
+                <td>{{ booking.user.username }}</td>
+                <td>{{ booking.date }}</td>
+                <td>{{ booking.location }}</td>
+                <td>{{ booking.floor }}</td>
+                <td>{{ booking.desk }}</td>
+                <td>{{ booking.notes or '' }}</td>
+                <td>
+                    {% if current_user.id == booking.user_id or current_user.role == 'admin' %}
+                        <a href="{{ url_for('main.update_booking', booking_id=booking.id) }}" class="btn btn-sm btn-warning">Edit</a>
+                        <form method="POST" action="{{ url_for('main.delete_booking', booking_id=booking.id) }}" style="display:inline;">
+                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Cancel</button>
+                        </form>
+                    {% endif %}
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7" class="text-center">No bookings available.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
