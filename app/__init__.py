@@ -8,19 +8,19 @@ login_manager = LoginManager()
 login_manager.login_view = 'auth.login'
 
 def create_app():
-    app = Flask(__name__)
+    app = Flask(__name__, static_folder='static', template_folder='templates')
 
     app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'dev-secret-change-me')
 
     os.makedirs(app.instance_path, exist_ok=True)
     db_path = os.path.join(app.instance_path, 'db.sqlite')
-
     database_url = os.getenv('DATABASE_URL', f'sqlite:///{db_path}')
     if database_url.startswith('postgres://'):
         database_url = database_url.replace('postgres://', 'postgresql://', 1)
 
     app.config['SQLALCHEMY_DATABASE_URI'] = database_url
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['TEMPLATES_AUTO_RELOAD'] = True
 
     db.init_app(app)
     login_manager.init_app(app)
