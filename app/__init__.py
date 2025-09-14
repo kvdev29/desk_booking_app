@@ -2,6 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_wtf import CSRFProtect
+from flask_wtf.csrf import generate_csrf
 import os
 
 db = SQLAlchemy()
@@ -12,11 +13,9 @@ csrf = CSRFProtect()
 def create_app():
     app = Flask(__name__, static_folder='static', template_folder='templates')
 
-    # SECRET_KEY: use env var if set and not empty, else safe default
     env_secret = os.getenv('SECRET_KEY')
     app.config['SECRET_KEY'] = env_secret if env_secret else 'dev-secret-change-me'
 
-    # SQLite in writable instance/ folder; support DATABASE_URL (e.g., Render Postgres)
     os.makedirs(app.instance_path, exist_ok=True)
     db_path = os.path.join(app.instance_path, 'db.sqlite')
     database_url = os.getenv('DATABASE_URL', f'sqlite:///{db_path}')
@@ -36,6 +35,10 @@ def create_app():
     @login_manager.user_loader
     def load_user(user_id):
         return User.query.get(int(user_id))
+
+    @app.context_processor
+    def inject_csrf_token():
+        return dict(csrf_token=generate_csrf)
 
     from .auth import auth as auth_blueprint
     app.register_blueprint(auth_blueprint)

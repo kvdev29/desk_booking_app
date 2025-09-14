@@ -39,6 +39,7 @@
                 <td>
                     <a href="{{ url_for('main.update_booking', booking_id=booking.id) }}" class="btn btn-warning btn-sm">Edit</a>
                     <form method="POST" action="{{ url_for('main.delete_booking', booking_id=booking.id) }}" style="display:inline;">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                         <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to cancel this booking?');">Cancel</button>
                     </form>
                 </td>
